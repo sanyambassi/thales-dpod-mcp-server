@@ -55,7 +55,8 @@ Execute this workflow:
 1. Call manage_audit_logs with action='get_logs'
 2. Use start_date='{start_date}' and end_date='{end_date}' for the date range
 3. {service_param}{filter_string}
-4. The tool will automatically:
+4. IMPORTANT: Only include filter parameters that have actual values. If a filter parameter is None, null, empty, or not specified, DO NOT include it in the tool call.
+5. The tool will automatically:
    - Generate an export job (with all filters: service/source, date range, action, status)
    - Wait for completion
    - Download and analyze the logs
@@ -80,6 +81,10 @@ This provides a complete audit trail for {service_identifier} from {start_date} 
             - By HSM source: source_filter="thales/cloudhsm/123456789", start_date="2025-04-01", end_date="2025-04-30"
             - By service name via source: source_filter="MyHSMService", start_date="2025/04/01", end_date="2025/04/30"
             - All services: start_date="2025-04-01", end_date="2025-04-30" (no service filter)
+            
+            CRITICAL: When calling the tool, only include parameters that have actual values. 
+            Do NOT include action_filter, status_filter, or source_filter if they are None, null, empty, or not specified.
+            Only include the parameters that were explicitly provided by the user.
             
             Note: Date formats supported are YYYY-MM-DD or YYYY/MM/DD. Simple dates automatically get appropriate timestamps."""
 

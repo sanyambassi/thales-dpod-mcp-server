@@ -57,8 +57,14 @@ def setup_logging(config: DPoDConfig, transport_mode: str) -> logging.Logger:
     server_file_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
     handlers.append(server_file_handler)
     
-    # Only add stdout handler when NOT using stdio transport to avoid JSON protocol interference
-    if transport_mode != "stdio":
+    # Add console handler based on transport mode
+    if transport_mode == "stdio":
+        # For stdio, use stderr to avoid interfering with MCP protocol on stdout
+        stderr_handler = logging.StreamHandler(sys.stderr)
+        stderr_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+        handlers.append(stderr_handler)
+    else:
+        # For HTTP, use stdout as normal
         stdout_handler = logging.StreamHandler(sys.stdout)
         stdout_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
         handlers.append(stdout_handler)
@@ -414,7 +420,11 @@ Note: --host and --port are only applicable with --transport streamable-http
     def signal_handler(signum, frame):
         """Handle shutdown signals gracefully."""
         nonlocal shutdown_requested
-        logger.info("Graceful shutdown initiated")
+        # For stdio, we need to print to stderr since stdout is used for MCP protocol
+        if args.transport == "stdio":
+            print("Graceful shutdown initiated", file=sys.stderr)
+        else:
+            logger.info("Graceful shutdown initiated")
         shutdown_requested = True
     
     signal.signal(signal.SIGINT, signal_handler)
@@ -424,7 +434,40 @@ Note: --host and --port are only applicable with --transport streamable-http
         if args.transport == "stdio":
             logger.info("Starting stdio transport")
             logger.info("Press Ctrl+C for graceful shutdown")
-            await mcp.run_stdio_async()
+            
+            # Create stdio task to handle graceful shutdown
+            stdio_task = asyncio.create_task(mcp.run_stdio_async())
+            
+            # Give the server a moment to fully start, then show ready message
+            await asyncio.sleep(0.5)
+            logger.info("Server Online and ready to accept connections")
+            
+            try:
+                # Wait for shutdown signal or stdio completion
+                while not shutdown_requested and not stdio_task.done():
+                    await asyncio.sleep(0.1)
+                
+                if shutdown_requested:
+                    print("Shutdown requested, stopping stdio transport...", file=sys.stderr)
+                    stdio_task.cancel()
+                    try:
+                        await stdio_task
+                    except asyncio.CancelledError:
+                        pass
+                    print("Stdio transport stopped gracefully", file=sys.stderr)
+                else:
+                    print("Stdio transport completed normally", file=sys.stderr)
+                    
+            except KeyboardInterrupt:
+                print("Keyboard interrupt received during stdio operation", file=sys.stderr)
+                shutdown_requested = True
+                print("Stopping stdio transport...", file=sys.stderr)
+                stdio_task.cancel()
+                try:
+                    await stdio_task
+                except asyncio.CancelledError:
+                    pass
+                print("Stdio transport stopped due to keyboard interrupt", file=sys.stderr)
         elif args.transport == "streamable-http":
             logger.info(f"Starting streamable HTTP transport on {args.host}:{args.port}")
             logger.info("Press Ctrl+C for graceful shutdown")
@@ -442,6 +485,10 @@ Note: --host and --port are only applicable with --transport streamable-http
             server_task = asyncio.create_task(
                 mcp.run_http_async(host=args.host, port=args.port)
             )
+            
+            # Give the server a moment to fully start, then show ready message
+            await asyncio.sleep(1.0)  # HTTP servers need a bit more time to bind
+            logger.info("Server Online and ready to accept connections")
             
             try:
                 # Wait for shutdown signal or server completion
@@ -474,30 +521,51 @@ Note: --host and --port are only applicable with --transport streamable-http
             sys.exit(1)
         
     except KeyboardInterrupt:
-        logger.info("Keyboard interrupt received, shutting down gracefully...")
+        if args.transport == "stdio":
+            print("Keyboard interrupt received, shutting down gracefully...", file=sys.stderr)
+        else:
+            logger.info("Keyboard interrupt received, shutting down gracefully...")
         shutdown_requested = True
     except Exception as e:
-        logger.error(f"Server error: {e}")
+        if args.transport == "stdio":
+            print(f"Server error: {e}", file=sys.stderr)
+        else:
+            logger.error(f"Server error: {e}")
         sys.exit(1)
     finally:
         # Clean up resources
-        logger.info("Cleaning up resources...")
+        if args.transport == "stdio":
+            print("Cleaning up resources...", file=sys.stderr)
+        else:
+            logger.info("Cleaning up resources...")
         
         # Close scope manager auth instance
         if 'scope_manager' in locals() and hasattr(scope_manager, 'auth'):
             try:
                 await scope_manager.auth.close()
-                logger.info("Scope manager auth closed")
+                if args.transport == "stdio":
+                    print("Scope manager auth closed", file=sys.stderr)
+                else:
+                    logger.info("Scope manager auth closed")
             except Exception as e:
-                logger.warning(f"Error closing scope manager auth: {e}")
+                if args.transport == "stdio":
+                    print(f"Error closing scope manager auth: {e}", file=sys.stderr)
+                else:
+                    logger.warning(f"Error closing scope manager auth: {e}")
         
         # Close direct auth instance if it exists
         if 'auth' in locals():
             try:
                 await auth.close()
-                logger.info("Direct auth instance closed")
+                if args.transport == "stdio":
+                    print("Direct auth instance closed", file=sys.stderr)
+                else:
+                    logger.info("Direct auth instance closed")
             except Exception as e:
-                logger.warning(f"Error closing auth: {e}")
+                if args.transport == "stdio":
+                    print(f"Error closing auth: {e}", file=sys.stderr)
+                else:
+                    logger.warning(f"Error closing auth: {e}")
         
         # Ensure all log messages are flushed to files
         try:
@@ -518,9 +586,15 @@ Note: --host and --port are only applicable with --transport streamable-http
                         handler.close()
                         
         except Exception as e:
-            logger.warning(f"Error during logging cleanup: {e}")
+            if args.transport == "stdio":
+                print(f"Error during logging cleanup: {e}", file=sys.stderr)
+            else:
+                logger.warning(f"Error during logging cleanup: {e}")
         
-        logger.info("Server shutdown complete")
+        if args.transport == "stdio":
+            print("Server shutdown complete", file=sys.stderr)
+        else:
+            logger.info("Server shutdown complete")
 
 
 if __name__ == "__main__":
