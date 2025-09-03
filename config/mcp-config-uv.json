@@ -1,0 +1,58 @@
+{
+  "mcpServers": {
+    "thales-dpod-stdio-na": {
+      "command": "uv",
+      "args": ["run", "python", "main.py", "--transport", "stdio"],
+      "env": {
+        "DPOD_CLIENT_ID": "your_client_id_here",
+        "DPOD_CLIENT_SECRET": "your_client_secret_here",
+        "DPOD_BASE_URL": "https://thales.na.market.dpondemand.io",
+        "DPOD_AUTH_URL": "https://access.dpondemand.io/oauth/v1/token",
+        "LOG_LEVEL": "INFO"
+      }
+    },
+    "thales-dpod-stdio-eu": {
+      "command": "uv",
+      "args": ["run", "python", "main.py", "--transport", "stdio"],
+      "env": {
+        "DPOD_CLIENT_ID": "your_client_id_here",
+        "DPOD_CLIENT_SECRET": "your_client_secret_here",
+        "DPOD_BASE_URL": "https://thales.eu.market.dpondemand.io",
+        "DPOD_AUTH_URL": "https://access.dpondemand.io/oauth/v1/token",
+        "LOG_LEVEL": "INFO"
+      }
+    },
+    "thales-dpod-stdio-ap": {
+      "command": "uv",
+      "args": ["run", "python", "main.py", "--transport", "stdio"],
+      "env": {
+        "DPOD_CLIENT_ID": "your_client_id_here",
+        "DPOD_CLIENT_SECRET": "your_client_secret_here",
+        "DPOD_BASE_URL": "https://thales.ap.market.dpondemand.io",
+        "DPOD_AUTH_URL": "https://access.dpondemand.io/oauth/v1/token",
+        "LOG_LEVEL": "INFO"
+      }
+    },
+    "thales-dpod-stdio-readonly": {
+      "command": "uv",
+      "args": ["run", "python", "main.py", "--transport", "stdio", "--read-only"],
+      "env": {
+        "DPOD_CLIENT_ID": "your_client_id_here",
+        "DPOD_CLIENT_SECRET": "your_client_secret_here",
+        "DPOD_BASE_URL": "https://thales.na.market.dpondemand.io",
+        "DPOD_AUTH_URL": "https://access.dpondemand.io/oauth/v1/token",
+        "DPOD_READ_ONLY_MODE": "true",
+        "LOG_LEVEL": "INFO"
+      }
+    },
+    "thales-dpod-http-na": {
+      "url": "http://localhost:8000/mcp"
+    },
+    "thales-dpod-http-eu": {
+      "url": "http://localhost:8001/mcp"
+    },
+    "thales-dpod-http-ap": {
+      "url": "http://localhost:8002/mcp"
+    }
+  }
+}
