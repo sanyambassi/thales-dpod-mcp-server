@@ -2,6 +2,12 @@
 
 A comprehensive FastMCP-based server for Thales DPoD (Data Protection on Demand) management operations with scope-based access control and actionable AI prompts.
 
+## 🎥 See It In Action
+
+**▶️ [Watch the Demo Video](https://www.youtube.com/watch?v=X5VOalQvQQw)** - Discover how AI-powered automation revolutionizes your DPoD workflows!
+
+---
+
 ## Features
 
 - **Scope-Based Access Control**: Automatic detection and enforcement of DPoD API scopes
