@@ -26,7 +26,8 @@ src/dpod_mcp_server/
 │   ├── scope_manager.py   # Scope-based access control
 │   ├── scope_wrapper.py   # Scope validation wrapper
 │   ├── validation.py      # Parameter validation
-│   └── dependency_injection.py # Dependency injection
+│   ├── dependency_injection.py # Dependency injection
+│   └── logging_utils.py   # Logging utilities
 ├── tools/                  # MCP tool implementations
 │   ├── services/          # Service management tools
 │   ├── audit/             # Audit log tools
@@ -35,7 +36,14 @@ src/dpod_mcp_server/
 │   ├── users/             # User management tools
 │   ├── scopes/            # Scope management tools
 │   ├── dpod_availability/ # DPoD platform status
-│   └── reports/           # Reporting tools
+│   ├── reports/           # Reporting tools
+│   ├── credentials/       # Credential management tools
+│   ├── products/          # Product catalog tools
+│   ├── pricing/           # Pricing management tools
+│   ├── service_agreements/ # Service agreement tools
+│   ├── subscriber_groups/ # Subscriber group tools
+│   ├── subscriptions/     # Subscription management tools
+│   └── authentication/    # Authentication tools
 ├── prompts/                # AI assistant prompts
 │   └── service_prompts.py # Actionable service prompts
 └── resources/              # Static resources
@@ -205,8 +213,6 @@ The server provides **14 comprehensive tools** for DPoD management operations:
 - `manage_pricing`: Pricing information and calculations
 - `manage_service_agreements`: Service agreement management
 
-**Note**: Tool availability depends on the detected API scope(s). Tools not supported by the current scope are not registered.
-
 ## Actionable AI Prompts
 
 The server includes **4 actionable prompts** that AI assistants can use to immediately execute DPoD operations:
@@ -255,7 +261,7 @@ For detailed information about these prompts, see [docs/PROMPTS.md](docs/PROMPTS
 
 ## MCP Client Integration
 
-The server implements the MCP protocol and can be used with any MCP-compatible client. For information about how to configure MCP clients, see [config](config/README.md).
+The server can be used with any MCP-compatible client. For information about how to configure MCP clients like Claude Desktop, Cursor AI and Google gemini, see [config](config/README.md).
 
 ## Development
 
