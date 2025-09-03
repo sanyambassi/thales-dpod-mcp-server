@@ -70,6 +70,9 @@ src/dpod_mcp_server/
    ```bash
    # Copy the example environment file
    cp .env.example .env
+
+   # Windows
+   copy .env.example .env
    
    # Edit .env with your DPoD credentials
    nano .env  # or use your preferred editor
