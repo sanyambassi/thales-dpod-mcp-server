@@ -13,10 +13,8 @@ A comprehensive FastMCP-based server for Thales DPoD (Data Protection on Demand)
 - **Actionable AI Prompts**: Ready-to-use prompts for immediate DPoD operations
 - **Service Management**: Full lifecycle management of DPoD services
 - **Audit Logging**: Comprehensive audit log operations and analysis
-- **Tenant Management**: Multi-tenant operations and configuration
+- **Tenant Management**: Tenant related operations for api_spadmin scope
 - **System Monitoring**: Health checks and system status
-- **Reporting**: Service analytics and compliance reporting
-- **Smart Identifiers**: Service management by name or UUID
 
 ## Architecture
 
@@ -143,7 +141,6 @@ The server supports different DPoD regions. Update the URLs accordingly:
 
 - **North America**: `https://thales.na.market.dpondemand.io`
 - **Europe**: `https://thales.eu.market.dpondemand.io`
-- **Asia Pacific**: `https://thales.ap.market.dpondemand.io`
 
 ## Usage
 
@@ -160,13 +157,6 @@ The server **automatically** implements **scope-based access control** based on 
 - **Action-Level Control**: Individual actions within tools are restricted based on scope
 - **Multiple Scope Support**: Union of permissions when multiple API scopes are detected
 - **Mandatory Scope Detection**: Server cannot start without valid API scopes
-
-**Scope Detection:**
-- Server automatically authenticates with DPoD at startup
-- Extracts API scopes from OAuth token
-- Determines primary scope (highest privilege)
-- Builds tool permission matrix
-- Logs detailed scope information
 
 **Note**: Scope management is **automatic and mandatory** - no configuration required. The server will automatically adapt to different user credentials and provide appropriate access levels.
 
@@ -265,13 +255,7 @@ For detailed information about these prompts, see [docs/PROMPTS.md](docs/PROMPTS
 
 ## MCP Client Integration
 
-The server implements the MCP protocol and can be used with any MCP-compatible client.
-
-**Scope Information:**
-- HTTP endpoints (`/health`, `/tools`) include scope information
-- Tool availability is clearly indicated
-- Allowed actions per tool are listed
-- Scope detection results are logged at startup
+The server implements the MCP protocol and can be used with any MCP-compatible client. For information about how to configure MCP clients, see [config](config/README.md).
 
 ## Development
 
@@ -281,7 +265,7 @@ The server is organized into logical modules:
 
 - **Core**: Authentication, configuration, validation, and scope management
 - **Tools**: MCP tool implementations
-- **Prompts**: AI assistant guidance
+- **Prompts**: MCP prompts
 
 ## Security
 
@@ -293,24 +277,6 @@ The server is organized into logical modules:
 ### Read-Only Mode
 - Protects against destructive operations
 - Can be combined with scope management
-
-### Scope Management
-- **API-Level Access Control**: Tools and actions restricted based on OAuth scopes
-- **Startup Validation**: Scope detection and validation at server startup
-- **Tool Registration**: Only supported tools are registered with MCP
-- **Action Filtering**: Individual actions within tools are scope-restricted
-- **Multiple Scope Support**: Union of permissions across all detected scopes
-
-**Scope Hierarchy:**
-1. `dpod.tenant.api_spadmin` - Full administrative access
-2. `dpod.tenant.api_appowner` - Application owner access
-3. `dpod.tenant.api_service` - Service-specific access
-
-**Security Benefits:**
-- **Principle of Least Privilege**: Users only see tools they can actually use
-- **Scope Isolation**: Service-level scopes cannot access tenant-wide operations
-- **Automatic Enforcement**: No manual permission checking required in tools
-- **Audit Trail**: All scope decisions are logged at startup
 
 ## Troubleshooting
 
