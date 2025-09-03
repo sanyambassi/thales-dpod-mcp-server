@@ -92,17 +92,8 @@ src/dpod_mcp_server/
    # stdio transport (default)
    uv run python main.py
    
-   # HTTP transport on default port 8000, binding to all interfaces
+   # HTTP transport
    uv run python main.py --transport streamable-http --port 8000
-   
-   # HTTP transport on specific port, binding to all interfaces
-   uv run python main.py --transport streamable-http --host 0.0.0.0 --port 8000
-   
-   # HTTP transport on specific IP address and port
-   uv run python main.py --transport streamable-http --host 192.168.1.100 --port 8000
-   
-   # HTTP transport on localhost only
-   uv run python main.py --transport streamable-http --host 127.0.0.1 --port 8000
    ```
 
    **Using pip:**
@@ -110,17 +101,8 @@ src/dpod_mcp_server/
    # stdio transport (default)
    python main.py
    
-   # HTTP transport on default port 8000, binding to all interfaces
+   # HTTP transport
    python main.py --transport streamable-http --port 8000
-   
-   # HTTP transport on specific port, binding to all interfaces
-   python main.py --transport streamable-http --host 0.0.0.0 --port 8000
-   
-   # HTTP transport on specific IP address and port
-   python main.py --transport streamable-http --host 192.168.1.100 --port 8000
-   
-   # HTTP transport on localhost only
-   python main.py --transport streamable-http --host 127.0.0.1 --port 8000
    ```
 
 ## Configuration
@@ -136,7 +118,6 @@ Required environment variables in `.env`:
 
 Optional environment variables:
 
-- `DPOD_OAUTH_SCOPE`: OAuth scope (defaults to tenant API access)
 - `DPOD_READ_ONLY_MODE`: Enable read-only mode (default: false)
 - `LOG_LEVEL`: Logging level (DEBUG, INFO, WARNING, ERROR, default: INFO)
 
@@ -152,7 +133,6 @@ DPOD_BASE_URL=https://thales.na.market.dpondemand.io
 DPOD_AUTH_URL=https://access.dpondemand.io/oauth/v1/token
 
 # Optional Configuration
-DPOD_OAUTH_SCOPE=tenant
 DPOD_READ_ONLY_MODE=false
 LOG_LEVEL=INFO
 ```
@@ -167,25 +147,6 @@ The server supports different DPoD regions. Update the URLs accordingly:
 
 ## Usage
 
-### Starting the Server
-
-```bash
-# Standard mode with automatic scope management
-python main.py
-
-# Read-only mode
-python main.py --read-only
-
-# Custom port
-python main.py --port 8080
-
-# Debug logging
-python main.py --log-level DEBUG
-
-# HTTP transport with custom host and port
-python main.py --transport streamable-http --host 127.0.0.1 --port 8080
-```
-
 ### Scope-Based Access Control
 
 The server **automatically** implements **scope-based access control** based on DPoD API scopes:
@@ -196,7 +157,6 @@ The server **automatically** implements **scope-based access control** based on 
 
 **Features:**
 - **Automatic Startup Authentication**: Server automatically authenticates at startup and detects available scopes
-- **Automatic Tool Filtering**: Only tools supported by the detected scope(s) are registered
 - **Action-Level Control**: Individual actions within tools are restricted based on scope
 - **Multiple Scope Support**: Union of permissions when multiple API scopes are detected
 - **Mandatory Scope Detection**: Server cannot start without valid API scopes
@@ -227,44 +187,50 @@ The server supports the following command-line arguments:
 
 **Note**: `--host` and `--port` arguments are only applicable when using `--transport streamable-http`. They have no effect with stdio transport.
 
-### Host Binding Examples
-
-- `--host 0.0.0.0`: Bind to all network interfaces (default, allows external access)
-- `--host 127.0.0.1`: Bind to localhost only (restricts to local access)
-- `--host 192.168.1.100`: Bind to specific network interface IP
-
 ## Available Tools
 
+The server provides **14 comprehensive tools** for DPoD management operations:
+
 ### Service Management
-- `manage_services`: Full service lifecycle management
-- `manage_tiles`: Service catalog and discovery
+- `manage_services`: Full service lifecycle management (create, read, update, delete, client binding)
+- `manage_tiles`: Service catalog and discovery (browse available service types)
 
 ### Audit and Compliance
-- `manage_audit_logs`: Audit log export and analysis
+- `manage_audit_logs`: Audit log export, download, and analysis with flexible filtering
 - `manage_reports`: Compliance and usage reporting
 
 ### System Operations
-- `manage_system`: Health checks and system status
 - `manage_tenants`: Tenant management operations
 - `check_dpod_availability`: DPoD platform status and incident monitoring
+- `manage_credentials`: Credential management operations
 
-### User and Scope Management
+### User and Access Management
 - `manage_users`: User management operations
 - `manage_scopes`: Scope management and validation
+- `manage_subscriber_groups`: Subscriber group management
+- `manage_subscriptions`: Subscription management
+
+### Product and Pricing
+- `manage_products`: Product catalog and service plans
+- `manage_pricing`: Pricing information and calculations
+- `manage_service_agreements`: Service agreement management
 
 **Note**: Tool availability depends on the detected API scope(s). Tools not supported by the current scope are not registered.
 
 ## Actionable AI Prompts
 
-The server includes **3 actionable prompts** that AI assistants can use to immediately execute DPoD operations:
+The server includes **4 actionable prompts** that AI assistants can use to immediately execute DPoD operations:
 
 ### 1. `get_service_logs` - Retrieve Service Audit Logs
-Get comprehensive audit logs for a specific DPoD service within a date range.
+Get comprehensive audit logs for a specific DPoD service within a date range with flexible filtering.
 
 **Parameters:**
-- `service_name` (required): Name of the service to get logs for
-- `start_date` (required): Start date for logs in RFC 3339 format (YYYY-MM-DDTHH:MM:SSZ)
-- `end_date` (required): End date for logs in RFC 3339 format (YYYY-MM-DDTHH:MM:SSZ)
+- `start_date` (required): Start date in YYYY-MM-DD or YYYY/MM/DD format
+- `end_date` (required): End date in YYYY-MM-DD or YYYY/MM/DD format
+- `service_name` (optional): Name of the service to get logs for
+- `source` (optional): Source filter (e.g., "thales/cloudhsm/partitionID")
+- `action_filter` (optional): Filter by specific actions
+- `status_filter` (optional): Filter by status (e.g., "LUNA_RET_OK" for HSM, "success" for CTAAS)
 
 ### 2. `create_hsm_service` - Provision HSM Service
 Create a new Hardware Security Module (HSM) service with comprehensive configuration.
@@ -292,8 +258,8 @@ Create an HSM service client and download the configuration file to a specified 
 **Parameters:**
 - `service_name` (required): Name of the HSM service to bind the client to
 - `client_name` (required): Name for the client (1-64 characters, must be unique for the service)
-- `download_path` (optional): Directory path where the client configuration file should be saved (defaults to system temp directory)
 - `os_type` (optional): Operating system type (linux or windows, defaults to linux)
+- `download_path` (optional): Directory path where the client configuration file should be saved (defaults to system temp directory)
 
 For detailed information about these prompts, see [docs/PROMPTS.md](docs/PROMPTS.md).
 
@@ -316,22 +282,6 @@ The server is organized into logical modules:
 - **Core**: Authentication, configuration, validation, and scope management
 - **Tools**: MCP tool implementations
 - **Prompts**: AI assistant guidance
-- **Resources**: Static configuration and templates
-
-### Adding New Tools
-
-1. Create a new tool file in the appropriate directory
-2. Implement the tool function with proper validation
-3. Add scope permissions to `ScopeManager.tool_scope_mappings`
-4. Register the tool in the main server
-5. Add documentation and examples
-
-### Code Style
-
-- Follow PEP 8 guidelines
-- Use type hints for all function parameters
-- Include comprehensive docstrings
-- Implement proper error handling
 
 ## Security
 
@@ -430,10 +380,6 @@ If you continue to experience issues:
 2. **Enable debug logging:** Use `--log-level DEBUG` for verbose output
 3. **Verify configuration:** Ensure all required environment variables are set
 4. **Test connectivity:** Verify network access to DPoD endpoints
-
-## License
-
-See [LICENSE](LICENSE) for license information.
 
 ## Contributing
 
