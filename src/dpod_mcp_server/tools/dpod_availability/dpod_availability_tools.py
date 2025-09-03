@@ -7,6 +7,7 @@ Provides platform status and availability information.
 
 import logging
 from typing import Dict, Any
+from datetime import datetime
 from fastmcp import Context
 from pydantic import Field
 
@@ -90,7 +91,6 @@ async def _get_dpod_status() -> Dict[str, Any]:
         import httpx
         import re
         from bs4 import BeautifulSoup
-        from datetime import datetime
         
         # Get logger for this function
         from ...core.logging_utils import get_tool_logger
