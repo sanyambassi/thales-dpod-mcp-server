@@ -36,8 +36,8 @@ class ScopeManager:
             
             # Service Management
             "manage_services": {
-                "dpod.tenant.api_spadmin": ["list_services", "get_service_instance", "create_service_instance", "update_service_instance", "delete_service_instance", "bind_client", "list_service_clients", "get_service_client", "delete_service_client", "get_creation_example"],
-                "dpod.tenant.api_appowner": ["list_services", "get_service_instance", "create_service_instance", "update_service_instance", "delete_service_instance", "bind_client", "list_service_clients", "get_service_client", "delete_service_client", "get_creation_example"],
+                        "dpod.tenant.api_spadmin": ["list_services", "get_service_instance", "create_service_instance", "delete_service_instance", "bind_client", "list_service_clients", "get_service_client", "delete_service_client", "get_creation_example"],
+        "dpod.tenant.api_appowner": ["list_services", "get_service_instance", "create_service_instance", "delete_service_instance", "bind_client", "list_service_clients", "get_service_client", "delete_service_client", "get_creation_example"],
                 "dpod.tenant.api_service": ["get_service_instance", "bind_client", "list_service_clients", "get_service_client"]  # Limited to specific service
             },
             

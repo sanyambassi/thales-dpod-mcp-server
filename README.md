@@ -220,7 +220,116 @@ The server provides **14 comprehensive tools** for DPoD management operations:
 
 The server includes **4 actionable prompts** that AI assistants can use to immediately execute DPoD operations:
 
-For detailed information about these prompts, see [docs/PROMPTS.md](docs/PROMPTS.md).
+For detailed information about these prompts, see [prompts](docs/prompts.md).
+
+## Example Prompts for AI Assistants
+
+Here are example prompts you can send to AI assistants/chatbots to demonstrate the DPoD MCP Server capabilities:
+
+### Service Management Examples
+
+**Create an HSM Service:**
+```
+"Create a new HSM key vault service named 'MySecureVault' with a single HSM plan and cryptovisor_fips device type."
+```
+
+**List All Services:**
+```
+"Show me all the DPoD services currently deployed in my account."
+```
+
+**Get Service Details:**
+```
+"Get detailed information about the service named 'MySecureVault' including its status and configuration."
+```
+
+**Create HSM Client:**
+```
+"Create a linux client named 'webapp-client' for the HSM service 'MySecureVault' and download the configuration file."
+```
+
+### Audit and Compliance Examples
+
+**Get Service Logs:**
+```
+"Get audit logs for the service 'MySecureVault' from January 1, 2025 to January 31, 2025."
+```
+
+**Get All Service Logs:**
+```
+"Show me all audit logs from March 1, 2025 to March 15, 2025 for all services."
+```
+
+**Get Filtered Logs:**
+```
+"Get audit logs for all CDSP services from last week, filtering for successful operations only."
+```
+
+**Export Audit Logs:**
+```
+"Export audit logs for HSM service 'MySecureVault' from the past 30 days and download them."
+```
+
+### Service Catalog and Discovery Examples
+
+**Browse Available Services:**
+```
+"Show me all available HSM service types I can deploy."
+```
+
+**Get Service Plans:**
+```
+"What service plans are available for the key_vault HSM service type?"
+```
+
+**Get Service Details:**
+```
+"Show me detailed information about the ctaas service type including pricing and requirements."
+```
+
+### System Monitoring Examples
+
+**Check Platform Status:**
+```
+"Is the DPoD platform currently operational? Are there any incidents or maintenance windows?"
+```
+
+**Check Service State**
+```
+"Check the Status of all my deployed services."
+```
+
+**Delete Service:**
+```
+"Delete the test HSM service named 'TestVault'."
+```
+
+**Create CTAAS Service:**
+```
+"Create a new CTAAS service named 'CDSPaaS_service' in the gcp-europe-west3 cluster with initial admin password 'SecurePass@123'."
+```
+
+### Multi-Step Workflow Examples
+
+**Complete HSM Setup:**
+```
+"1. Create an HSM key vault service named 'ProductionVault' with single HSM plan
+2. Wait for it to be provisioned
+3. Create a windows client named 'app-server' for this service
+4. Download the client configuration file
+5. Show me the final service status"
+```
+
+**Service Discovery and Planning:**
+```
+"1. Show me all available HSM service types
+2. Get pricing information for single_hsm and dual_hsm plans for US."
+```
+
+**DPoD Service availability:**
+```
+"Is there a platform outage? Check the DPoD availability status and any active incidents."
+```
 
 ## MCP Client Integration
 
@@ -328,8 +437,8 @@ If you continue to experience issues:
 
 Additional documentation is available in the `docs/` folder:
 
-- **[docs/PROMPTS.md](docs/prompts.md)** - Detailed guide to actionable AI prompts
-- **[docs/testing.md](docs/testing.md)** - Manual JSON-RPC testing guide
+- **[Prompts](docs/prompts.md)** - Detailed guide to actionable AI prompts
+- **[Testing](docs/testing.md)** - Manual JSON-RPC testing guide
 
 ## Support
 

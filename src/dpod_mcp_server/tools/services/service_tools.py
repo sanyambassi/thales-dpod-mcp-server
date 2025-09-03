@@ -374,13 +374,13 @@ async def manage_services(
     client_name: Optional[str] = Field(default=None, description="Client name for bind_client action (1-64 characters)"),
     os_type: Optional[str] = Field(default="linux", description="OS type for bind_client action (linux or windows)"),
     download_path: Optional[str] = Field(default=None, description="Directory path where client configuration file should be saved (optional, defaults to system temp directory)"),
-    client_id: Optional[str] = Field(default=None, description="Client ID for get_service_client and delete_service_client actions"),
-    description: Optional[str] = Field(default=None, description="Service description for update_service_instance action")
+    client_id: Optional[str] = Field(default=None, description="Client ID for get_service_client and delete_service_client actions")
+
 ) -> Dict[str, Any]:
     """Service instance management operations.
     
     Actions: list_services, get_service_instance, create_service_instance, 
-             update_service_instance, delete_service_instance, list_categories, list_types, 
+             delete_service_instance, list_categories, list_types, 
              bind_client, list_service_clients, get_service_client, delete_service_client
     
     ⚠️  CRITICAL DISTINCTION FOR AI ASSISTANTS ⚠️
@@ -451,7 +451,7 @@ async def manage_services(
         
         # Define read-only vs write actions
         read_actions = {"list_services", "get_service_instance", "list_categories", "list_types", "get_creation_example", "list_service_clients", "get_service_client"}
-        write_actions = {"create_service_instance", "update_service_instance", "delete_service_instance", "bind_client", "delete_service_client"}
+        write_actions = {"create_service_instance", "delete_service_instance", "bind_client", "delete_service_client"}
         
         # Check read-only mode for write actions
         if action in write_actions and config.read_only_mode:
@@ -616,24 +616,7 @@ async def manage_services(
             
             await ctx.report_progress(90, 100, "Service creation completed, finalizing...")
             await ctx.info("Service creation completed successfully")
-        elif action == "update_service_instance":
-            # Enhanced progress reporting for service update
-            await ctx.report_progress(15, 100, "Starting service update workflow...")
-            await ctx.info("Starting service update workflow...")
-            
-            if not service_id:
-                await ctx.error("Service ID is required for update_service_instance action")
-                raise ValueError("service_id required for update_service_instance action")
-            
-            await ctx.report_progress(25, 100, "Validating update parameters...")
-            await ctx.info(f"Preparing to update service: {service_id}")
-            
-            result = await _update_service_instance(
-                auth, instance_id=service_id, name=name, description=description, configuration=configuration
-            )
-            
-            await ctx.report_progress(90, 100, "Service update completed, finalizing...")
-            await ctx.info("Service update completed successfully")
+
         elif action == "delete_service_instance":
             # Enhanced progress reporting for service deletion
             await ctx.report_progress(15, 100, "Starting service deletion workflow...")
@@ -1109,88 +1092,6 @@ async def _create_service_instance(auth: DPoDAuth, **kwargs) -> Dict[str, Any]:
                 "message": "Service instance creation accepted and is in progress."
             }
 
-    except ValidationError as e:
-        return {"success": False, "error": f"Validation error: {e}"}
-    except Exception as e:
-        return {"success": False, "error": str(e)}
-
-
-async def _update_service_instance(auth: DPoDAuth, **kwargs) -> Dict[str, Any]:
-    """Update an existing service instance.
-    
-    This function automatically handles both UUID and name-based service identification:
-    - If a UUID is provided, it validates and uses it directly
-    - If a name is provided, it searches for the service and extracts the UUID
-    - Then it performs the actual update using the UUID
-    """
-    try:
-        # Get the instance identifier (could be UUID or name)
-        instance_identifier = kwargs.get("instance_id")
-        
-        if not instance_identifier:
-            return {"success": False, "error": "instance_id is required"}
-        
-        # Use smart identifier resolution
-        try:
-            resolved_uuid = await _resolve_service_identifier(auth, instance_identifier, "update_service_instance")
-        except ValueError as e:
-            return {"success": False, "error": str(e)}
-        
-        # Validate optional parameters
-        name = validate_optional_param(
-            kwargs.get("name"),
-            lambda x: validate_string_param(x, "Name", min_length=4, max_length=45),
-            "name"
-        )
-        
-        description = validate_optional_param(
-            kwargs.get("description"),
-            lambda x: validate_string_param(x, "Description", min_length=1, max_length=500),
-            "description"
-        )
-        
-        configuration = validate_optional_param(
-            kwargs.get("configuration"),
-            lambda x: validate_json_data(x, "Configuration"),
-            "configuration"
-        )
-        
-        # Prepare update data
-        update_data = {}
-        if name:
-            update_data["name"] = name
-        if description:
-            update_data["description"] = description
-        if configuration:
-            update_data["configuration"] = configuration
-        
-        if not update_data:
-            return {"success": False, "error": "No fields to update"}
-        
-        # Make API request using the resolved UUID
-        response = await auth.make_authenticated_request(
-            "PUT",
-            f"/v1/service_instances/{resolved_uuid}",
-            json_data=update_data
-        )
-        
-        if response.status_code != 200:
-            return {
-                "success": False,
-                "error": f"Failed to update service instance: {response.status_code}",
-                "details": response.text
-            }
-        
-        updated_instance = response.json()
-        
-        return {
-            "success": True,
-            "instance": updated_instance,
-            "message": "Service instance updated successfully",
-            "resolved_uuid": resolved_uuid,
-            "original_identifier": instance_identifier
-        }
-        
     except ValidationError as e:
         return {"success": False, "error": f"Validation error: {e}"}
     except Exception as e:

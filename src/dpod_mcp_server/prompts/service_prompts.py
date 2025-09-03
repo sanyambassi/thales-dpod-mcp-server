@@ -94,22 +94,9 @@ async def create_hsm_service(
     service_name: str = Field(description="Name for the service (4-45 characters)"),
     service_plan: str = Field(description="Service plan (e.g., single_hsm, dual_hsm, multi_hsm, trial, standard)"),
     device_type: str = Field(description="Device type (cryptovisor or cryptovisor_fips, it is optional and defaults to cryptovisor_fips)", default="cryptovisor_fips"),
-    description: str = Field(description="Service description (optional)", default="Service created using the DPoD MCP server"),
     ctx: Context = None
 ) -> str:
     """Create a new HSM service with comprehensive configuration."""
-    
-    # Only include description if it's a meaningful custom value (not default or Field metadata)
-    default_desc = "Service created using the DPoD MCP server"
-    is_custom_description = (
-        description != default_desc and 
-        "annotation=" not in str(description) and 
-        "required=" not in str(description) and
-        "default=" not in str(description) and
-        "description=" not in str(description)
-    )
-    
-    description_param = f"\n   - description: '{description}'" if is_custom_description else ""
     
     return f"""Use the manage_services tool to create a new HSM service.
 
@@ -118,7 +105,7 @@ Execute this workflow:
 2. Set parameters:
    - name: '{service_name}'
    - service_type: '{service_type}'
-   - service_plan: '{service_plan}'{description_param}
+   - service_plan: '{service_plan}'
    - device_type: '{device_type}'
 3. The tool will automatically include deviceType in configuration
 4. Monitor provisioning status and return service details
@@ -134,22 +121,9 @@ async def create_ctaas_service(
     service_name: str = Field(description="Name for the service (4-45 characters)"),
     initial_admin_password: str = Field(description="Initial admin password for the CTAAS service (minimum 8 characters)"),
     service_plan: str = Field(description="Service plan (e.g., Tenant)", default="Tenant"),
-    description: str = Field(description="Service description (optional)", default="CTAAS service created using the DPoD MCP server"),
     ctx: Context = None
 ) -> str:
     """Create a new CTAAS service in the specified cluster."""
-    
-    # Only include description if it's a meaningful custom value (not default or Field metadata)
-    default_desc = "CTAAS service created using the DPoD MCP server"
-    is_custom_description = (
-        description != default_desc and 
-        "annotation=" not in str(description) and 
-        "required=" not in str(description) and
-        "default=" not in str(description) and
-        "description=" not in str(description)
-    )
-    
-    description_param = f"\n   - description: '{description}'" if is_custom_description else ""
     
     return f"""Use the manage_services tool to create a new CTAAS service.
 
@@ -158,7 +132,7 @@ Execute this workflow:
 2. Set parameters:
    - name: '{service_name}'
    - service_type: 'ctaas'
-   - service_plan: '{service_plan}'{description_param}
+   - service_plan: '{service_plan}'
    - configuration: {{'cluster': '{cluster}', 'initial_admin_password': '{initial_admin_password}'}}
 3. The tool will automatically set serviceType='ctaas' and servicePlan='Tenant' if not specified
 4. Monitor the provisioning status

@@ -68,7 +68,7 @@ AI Response:
 - `list_services` - List deployed services
 - `get_service_instance` - Get details of a specific service
 - `create_service_instance` - Create a new service
-- `update_service_instance` - Update an existing service
+
 - `delete_service_instance` - Delete a service
 - `bind_client` - Connect a client to a service
 
