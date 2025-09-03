@@ -2,7 +2,7 @@
 
 ## Overview
 
-The DPoD MCP Server now includes **3 actionable prompts** that AI assistants can use to immediately execute DPoD operations. These prompts are **not user guides** - they are **executable instructions** that tell AI assistants exactly what to do.
+The DPoD MCP Server now includes **4 actionable prompts** that AI assistants can use to immediately execute DPoD operations.
 
 ## Available Prompts
 
@@ -25,7 +25,6 @@ Create a new Hardware Security Module (HSM) service with comprehensive configura
 - `service_name` (required): Name for the service (4-45 characters)
 - `service_plan` (required): Service plan (single_hsm, dual_hsm, multi_hsm, trial, standard)
 - `device_type` (optional): Device type (cryptovisor or cryptovisor_fips, defaults to cryptovisor_fips)
-- `description` (optional): Service description
 
 ### 3. `create_ctaas_service` - Provision CTAAS Service
 Create a new CipherTrust Data Security Platform as a Service (CTAAS) in a specific cluster.
@@ -35,7 +34,6 @@ Create a new CipherTrust Data Security Platform as a Service (CTAAS) in a specif
 - `service_name` (required): Name for the service (4-45 characters)
 - `initial_admin_password` (required): Initial admin password for the CTAAS service (minimum 8 characters)
 - `service_plan` (optional): Service plan (defaults to "Tenant")
-- `description` (optional): Service description
 
 ### 4. `create_hsm_client` - Create and Download HSM Service Client
 Create an HSM service client and download the configuration file to a specified location.
