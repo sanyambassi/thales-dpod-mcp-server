@@ -10,6 +10,7 @@ A comprehensive FastMCP-based server for Thales DPoD (Data Protection on Demand)
 
 ## Quick Install
 **Click Below**
+
 [![Install MCP Server](https://cursor.com/deeplink/mcp-install-light.svg)](https://cursor.com/en/install-mcp?name=thales-dpod-stdio-na&config=eyJjb21tYW5kIjoicHl0aG9uIG1haW4ucHkgLS10cmFuc3BvcnQgc3RkaW8iLCJlbnYiOnsiRFBPRF9DTElFTlRfSUQiOiJ5b3VyX2NsaWVudF9pZF9oZXJlIiwiRFBPRF9DTElFTlRfU0VDUkVUIjoieW91cl9jbGllbnRfc2VjcmV0X2hlcmUiLCJEUE9EX0JBU0VfVVJMIjoiaHR0cHM6Ly90aGFsZXMubmEubWFya2V0LmRwb25kZW1hbmQuaW8iLCJEUE9EX0FVVEhfVVJMIjoiaHR0cHM6Ly9hY2Nlc3MuZHBvbmRlbWFuZC5pby9vYXV0aC92MS90b2tlbiIsIkxPR19MRVZFTCI6IklORk8ifX0%3D)
 
 
