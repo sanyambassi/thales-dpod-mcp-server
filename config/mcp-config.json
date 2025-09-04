@@ -11,9 +11,9 @@
         "LOG_LEVEL": "INFO"
       }
     },
-    "thales-dpod-stdio-eu": {
+    "thales-dpod-stdio-eu-readonly-cli": {
       "command": "python",
-      "args": ["main.py", "--transport", "stdio"],
+      "args": ["main.py", "--transport", "stdio", "--read-only"],
       "env": {
         "DPOD_CLIENT_ID": "your_client_id_here",
         "DPOD_CLIENT_SECRET": "your_client_secret_here",
@@ -22,20 +22,9 @@
         "LOG_LEVEL": "INFO"
       }
     },
-    "thales-dpod-stdio-ap": {
+    "thales-dpod-stdio-na-readonly-env": {
       "command": "python",
       "args": ["main.py", "--transport", "stdio"],
-      "env": {
-        "DPOD_CLIENT_ID": "your_client_id_here",
-        "DPOD_CLIENT_SECRET": "your_client_secret_here",
-        "DPOD_BASE_URL": "https://thales.ap.market.dpondemand.io",
-        "DPOD_AUTH_URL": "https://access.dpondemand.io/oauth/v1/token",
-        "LOG_LEVEL": "INFO"
-      }
-    },
-    "thales-dpod-stdio-readonly": {
-      "command": "python",
-      "args": ["main.py", "--transport", "stdio", "--read-only"],
       "env": {
         "DPOD_CLIENT_ID": "your_client_id_here",
         "DPOD_CLIENT_SECRET": "your_client_secret_here",
@@ -45,14 +34,8 @@
         "LOG_LEVEL": "INFO"
       }
     },
-    "thales-dpod-http-na": {
+    "thales-dpod-http": {
       "url": "http://localhost:8000/mcp"
-    },
-    "thales-dpod-http-eu": {
-      "url": "http://localhost:8001/mcp"
-    },
-    "thales-dpod-http-ap": {
-      "url": "http://localhost:8002/mcp"
     }
   }
 }

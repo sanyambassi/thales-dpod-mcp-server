@@ -30,6 +30,7 @@ For HTTP transport, you need to:
    export DPOD_CLIENT_SECRET="your_client_secret_here"
    export DPOD_BASE_URL="https://thales.na.market.dpondemand.io"
    export DPOD_AUTH_URL="https://access.dpondemand.io/oauth/v1/token"
+   export DPOD_READ_ONLY_MODE="false"
    export LOG_LEVEL="INFO"
    ```
 
@@ -75,7 +76,7 @@ export LOG_LEVEL="INFO"
 python main.py --transport streamable-http --port 8000
 ```
 
-### Read-Only Mode
+### Read-Only Mode (env)
 ```bash
 export DPOD_CLIENT_ID="your_client_id"
 export DPOD_CLIENT_SECRET="your_client_secret"
@@ -84,6 +85,16 @@ export DPOD_AUTH_URL="https://access.dpondemand.io/oauth/v1/token"
 export DPOD_READ_ONLY_MODE="true"
 export LOG_LEVEL="INFO"
 python main.py --transport streamable-http --port 8000
+```
+
+### Read-Only Mode (CLI)
+```bash
+export DPOD_CLIENT_ID="your_client_id"
+export DPOD_CLIENT_SECRET="your_client_secret"
+export DPOD_BASE_URL="https://thales.na.market.dpondemand.io"
+export DPOD_AUTH_URL="https://access.dpondemand.io/oauth/v1/token"
+export LOG_LEVEL="INFO"
+python main.py --transport stdio --port 8000 --read-only
 ```
 
 ## Regional Endpoints
