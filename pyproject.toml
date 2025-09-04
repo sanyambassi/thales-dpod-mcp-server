@@ -75,8 +75,8 @@ Repository = "https://github.com/thales/dpod-mcp-server"
 Issues = "https://github.com/thales/dpod-mcp-server/issues"
 
 [project.scripts]
-thales-dpod-mcp = "src.dpod_mcp_server.main:main"
-dpod-mcp-server = "src.dpod_mcp_server.main:main"
+thales-dpod-mcp-server = "main:main_sync"
+dpod-mcp-server = "main:main_sync"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src"]

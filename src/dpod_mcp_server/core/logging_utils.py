@@ -22,7 +22,9 @@ def get_tool_logger(tool_name: str):
     if not logger.handlers or not any(isinstance(h, logging.FileHandler) for h in logger.handlers):
         try:
             from pathlib import Path
-            logs_dir = Path("logs")
+            # Use the same approach as main.py - relative to script location
+            script_dir = Path(__file__).parent.parent.parent  # Go up to project root
+            logs_dir = script_dir / "logs"
             tools_logs_dir = logs_dir / "tools"
             tools_logs_dir.mkdir(parents=True, exist_ok=True)
             

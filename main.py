@@ -34,8 +34,9 @@ from src.dpod_mcp_server.resources import server_status, health_check
 
 def setup_logging(config: DPoDConfig, transport_mode: str) -> logging.Logger:
     """Set up logging configuration."""
-    # Create logs directory
-    logs_dir = Path("logs")
+    # Create logs directory relative to the script location, not current working directory
+    script_dir = Path(__file__).parent
+    logs_dir = script_dir / "logs"
     logs_dir.mkdir(exist_ok=True)
     
     # Create tools subdirectory
@@ -597,7 +598,8 @@ Note: --host and --port are only applicable with --transport streamable-http
             logger.info("Server shutdown complete")
 
 
-if __name__ == "__main__":
+def main_sync():
+    """Synchronous entry point for the script."""
     try:
         logging.basicConfig(level=logging.INFO)
         basic_logger = logging.getLogger("dpod.startup")
@@ -611,3 +613,7 @@ if __name__ == "__main__":
     except Exception as e:
         basic_logger.error(f"Fatal error: {e}")
         sys.exit(1)
+
+
+if __name__ == "__main__":
+    main_sync()
